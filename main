@@ -1,0 +1,79 @@
+// NRW_Bresenham.cpp : Defines the entry point for the console application.
+// Currently only for 0 <= m <= 1
+#pragma once
+#include "stdafx.h"
+#include <stdlib.h>
+#include <GL\glut.h>
+#include <cmath>
+#include <iostream>
+
+static int Y;
+static int X;
+
+void lightPoint(void)
+{
+	
+	glClearColor(1.0, 1.0, 1.0, 0.0);
+	glClear(GL_COLOR_BUFFER_BIT);
+	glColor3f(0.0, 1.0, 1.0);
+	glBegin(GL_POINTS);
+		glVertex2i(X, Y);
+	glEnd();
+	glutSwapBuffers();
+}
+
+void createLine(int x1, int y1, int x2, int y2)
+{
+	//Compute dy, dx
+	int dY = y2 - y1;
+	int dX = x2 - x1;
+	//dFa
+	int dFa = 2*(dY - dX);
+	//dFb
+	int dFb = 2*dY;
+	//Compute initial F
+	int F = 2*dY - dX;
+
+	//Create Y
+	Y = y1;
+
+	//Main loop from minX to maxX
+	for (X = x1; X <= x2; X++)
+	{
+		if(F > 0)
+		{
+			//Increment Y
+			Y++;
+			//light pixel A
+			glutDisplayFunc(lightPoint);
+			//Test code
+			std::cout << X << "," << Y << std::endl;
+			//Update F
+			F += dFa;
+		}
+		else
+		{
+			//Light pixel B
+			glutDisplayFunc(lightPoint);
+			//Test code
+			std::cout << X << "," << Y << std::endl;
+			//Update F
+			F += dFb;
+		}
+	}
+}
+
+void main(int argc, char** argv)
+{
+	glutInit(&argc, argv);
+	glutInitDisplayMode(GLUT_RGB | GLUT_DOUBLE);
+	glutInitWindowPosition(100, 150);
+	glutInitWindowSize(800, 600);
+	glutCreateWindow("Bresenham Line Scan");
+	glColor3f(0.0, 1.0, 1.0);
+	createLine(0,0, 300, 100);
+	glutDisplayFunc(lightPoint);
+	std::cout << "Final" << X << "," << Y << std::endl;
+	glutMainLoop();
+}
+
